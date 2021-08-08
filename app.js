@@ -17,16 +17,19 @@ app.get('/:citySlug/:rideIdentifier', (request, response) => {
         .then(async (json) => {
             console.log(json);
             const title = json.title;
-            const dateTime = json.date_time;
+            const startTimestamp = json.date_time;
+            const endTimestamp = startTimestamp + 180 * 60;
             const location = json.location;
 
             const eventQRCode = createEventQRCode({
                 locationData: {
                     description: title,
-                    address: location
+                    address: location,
+                    startTimestamp: startTimestamp,
+                    endTimestamp: endTimestamp
                 },
                 vendorData: {
-                    type: 1,
+                    type: 2,
                     defaultCheckInLengthInMinutes: 180
                 }
             });
@@ -35,9 +38,7 @@ app.get('/:citySlug/:rideIdentifier', (request, response) => {
 
             response.sendfile('./qr.png')
         });
-
-
-})
+});
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
